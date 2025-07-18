@@ -1,0 +1,39 @@
+[language-server.nixd]
+command = "nixd"
+config = { nixd = { formatting = { command = "nixpkgs-fmt" } } }
+
+[language-server.nil]
+command = "nil"
+config = { nil = { formatting = { command = "nixpkgs-fmt" } } }
+
+[[language]]
+name = "nix"
+scope = "source.nix"
+injection-regex = "nix"
+file-types = ["nix"]
+shebangs = []
+comment-token = "#"
+language-servers = ["nixd", "nil"]
+auto-format = true
+formatter = { command = "nixpkgs-fmt" }
+indent = { tab-width = 2, unit = "  " }
+
+[[language]]
+name = "json"
+language-servers = ["vscode-json-language-server"]
+auto-format = true
+
+[[language]]
+name = "yaml"
+language-servers = ["yaml-language-server"]
+auto-format = true
+
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+auto-format = true
+
+[[language]]
+name = "markdown"
+language-servers = ["marksman"]
+auto-format = true
