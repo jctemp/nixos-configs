@@ -5,7 +5,7 @@
     # Nix tooling
     nil # Nix LSP server
     nixd # Alternative Nix LSP (more advanced)
-    nixpkgs-fmt # Nix formatter
+    nixfmt-rfc-style # Nix formatter
     deadnix # Dead code detection
     statix # Linter for Nix
     nix-tree # Dependency tree visualization
@@ -30,6 +30,7 @@
     yq # YAML processing
     fd # File finder
     ripgrep # Text search
+    taplo
   ];
 
   # Development environment variables

@@ -4,7 +4,11 @@ config = { nixd = { formatting = { command = "nixpkgs-fmt" } } }
 
 [language-server.nil]
 command = "nil"
-config = { nil = { formatting = { command = "nixpkgs-fmt" } } }
+config = { nil = { formatting = { command = "nixpkgs-fmt" }, nix = { flake = { autoArchive = true, autoEvalInputs = true, nixpkgsInputName = "nixpkgs-stable" } } } }
+
+[language-server.taplo]
+command = "taplo"
+config = { taplo = { formatting = { command = "taplo fmt" } } }
 
 [[language]]
 name = "nix"
@@ -13,7 +17,8 @@ injection-regex = "nix"
 file-types = ["nix"]
 shebangs = []
 comment-token = "#"
-language-servers = ["nixd", "nil"]
+# language-servers = ["nixd", "nil"]
+language-servers = ["nil"]
 auto-format = true
 formatter = { command = "nixpkgs-fmt" }
 indent = { tab-width = 2, unit = "  " }
@@ -21,6 +26,11 @@ indent = { tab-width = 2, unit = "  " }
 [[language]]
 name = "json"
 language-servers = ["vscode-json-language-server"]
+auto-format = true
+
+[[language]]
+name = "toml"
+language-servers = ["taplo"]
 auto-format = true
 
 [[language]]

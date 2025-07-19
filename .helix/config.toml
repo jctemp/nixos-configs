@@ -14,7 +14,14 @@ preview-completion-insert = false
 completion-replace = true
 
 [editor.statusline]
-left = ["mode", "spinner", "version-control", "file-name", "read-only-indicator", "file-modification-indicator"]
+left = [
+  "mode",
+  "spinner",
+  "version-control",
+  "file-name",
+  "read-only-indicator",
+  "file-modification-indicator",
+]
 center = ["workspace-diagnostics"]
 right = ["diagnostics", "selections", "register", "position", "file-encoding"]
 
