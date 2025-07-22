@@ -1,6 +1,6 @@
-{ lib }:
+{ inputs, lib }:
 {
-  mkSystem = import ./mkSystem.nix { inherit lib; };
-  mkHome = import ./mkHome.nix { inherit lib; };
-  utils = import ./utils.nix { inherit lib; };
+  mkSystem = import ./mkSystem.nix { inherit inputs lib; };
+  mkHome = import ./mkHome.nix { inherit inputs lib; };
+  utils = import ./utils.nix { inherit inputs lib; };
 }

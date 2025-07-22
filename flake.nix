@@ -13,12 +13,17 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs-stable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    blender-bin.url = "github:edolstra/nix-warez?dir=blender";
+    blender-bin.inputs.nixpkgs.follows = "nixpkgs-stable";
   };
 
   outputs =
     { self, flake-parts, ... }@inputs:
     let
-      nclib = import "${self}/lib" { inherit (inputs.nixpkgs-stable) lib; };
+      nclib = import "${self}/lib" {
+        inherit inputs;
+        inherit (inputs.nixpkgs-stable) lib;
+      };
     in
     flake-parts.lib.mkFlake { inherit inputs; } (
       { ... }:
