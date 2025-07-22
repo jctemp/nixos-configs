@@ -1,16 +1,20 @@
 {
-  description = "Configuration";
+  description = "NixOS configuration for hosts and users";
 
   inputs = {
+    # All
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-
-    impermanence.url = "github:nix-community/impermanence";
-    nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs-unstable";
+
+    # System
+    impermanence.url = "github:nix-community/impermanence";
+    nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs-stable";
+
+    # Home
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
     blender-bin.url = "github:edolstra/nix-warez?dir=blender";
@@ -30,6 +34,7 @@
       {
         _module.args = { inherit nclib; };
 
+        # 1. Import flake-parts modules (user and home configuration)
         imports = [
           # Hosts and their configurations
           ./hosts
@@ -37,7 +42,9 @@
           ./homes
         ];
 
+        # 2. 'inline' flake-parts module definition
         flake = {
+          # non-GUI configurations
           nixosModules = {
             nixos = ./modules/nixos;
             core = ./modules/nixos/core;
@@ -46,6 +53,7 @@
             storage = ./modules/nixos/storage;
             profiles = ./modules/nixos/profiles;
           };
+          # User configurations
           homeModules = {
             home = ./modules/home;
             core = ./modules/home/core;
@@ -54,15 +62,6 @@
             profiles = ./modules/home/profiles;
           };
         };
-
-        systems = [ "x86_64-linux" ];
-
-        perSystem =
-          { system, ... }:
-          {
-            # nixpkgs is not part of inputs - enhance manually adding pkgs
-            _module.args.pkgs = import inputs.nixpkgs-unstable { inherit system; };
-          };
       }
     );
 }
