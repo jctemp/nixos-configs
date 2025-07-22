@@ -1,10 +1,5 @@
 [language-server.nixd]
 command = "nixd"
-config = { nixd = { formatting = { command = "nixpkgs-fmt" } } }
-
-[language-server.nil]
-command = "nil"
-config = { nil = { formatting = { command = "nixpkgs-fmt" }, nix = { flake = { autoArchive = true, autoEvalInputs = true, nixpkgsInputName = "nixpkgs-stable" } } } }
 
 [language-server.taplo]
 command = "taplo"
@@ -18,9 +13,9 @@ file-types = ["nix"]
 shebangs = []
 comment-token = "#"
 # language-servers = ["nixd", "nil"]
-language-servers = ["nil"]
+language-servers = ["nixd"]
 auto-format = true
-formatter = { command = "nixpkgs-fmt" }
+formatter = { command = "nixfmt" }
 indent = { tab-width = 2, unit = "  " }
 
 [[language]]

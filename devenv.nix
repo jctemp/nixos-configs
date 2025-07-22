@@ -2,19 +2,14 @@
 {
   # Core development packages
   packages = with pkgs; [
-    # Nix tooling
-    nil # Nix LSP server
-    nixd # Alternative Nix LSP (more advanced)
     nixfmt-rfc-style # Nix formatter
     deadnix # Dead code detection
     statix # Linter for Nix
-    nix-tree # Dependency tree visualization
     nix-output-monitor # Better build output
+    taplo # TOML
 
     # Development tools
     git
-    gh # GitHub CLI
-    just # Command runner
     age # For nixsops
     ssh-to-age # Convert SSH keys to age
 
@@ -24,28 +19,15 @@
 
     # VM testing
     qemu # For nixos tests
-
-    # Additional utilities
-    jq # JSON processing
-    yq # YAML processing
-    fd # File finder
-    ripgrep # Text search
-    taplo
   ];
 
   # Development environment variables
   env = {
-    # Improve Nix evaluation performance
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
-
-    # Set up nixsops age key location
     SOPS_AGE_KEY_FILE = "${config.env.DEVENV_ROOT}/secrets/age-key.txt";
-
-    # Enable better error messages
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
-  # Git hooks for code quality
   git-hooks = {
     hooks = {
       trim-trailing-whitespace.enable = true;
@@ -79,9 +61,7 @@
     };
   };
 
-  # Development scripts
   scripts = {
-    # Build specific host
     build-host = {
       exec = ''
         if [ -z "$1" ]; then
@@ -94,7 +74,6 @@
       description = "Build a specific host configuration";
     };
 
-    # Build specific home configuration
     build-home = {
       exec = ''
         if [ -z "$1" ]; then
@@ -107,29 +86,6 @@
       description = "Build a specific home configuration";
     };
 
-    # Run tests
-    test = {
-      exec = ''
-        echo "Running all tests..."
-        nix flake check --print-build-logs
-      '';
-      description = "Run all tests";
-    };
-
-    # Run specific test
-    test-specific = {
-      exec = ''
-        if [ -z "$1" ]; then
-          echo "Usage: test-specific <test-name>"
-          exit 1
-        fi
-        echo "Running test: $1"
-        nix build .#checks.x86_64-linux.$1 --print-build-logs
-      '';
-      description = "Run a specific test";
-    };
-
-    # Generate hardware config with nix-facter
     gen-hardware = {
       exec = ''
         if [ -z "$1" ]; then
@@ -141,19 +97,6 @@
         nix run github:numtide/nix-facter -- --output hosts/$1/facter.json
       '';
       description = "Generate hardware configuration";
-    };
-
-    # Initialize secrets
-    init-secrets = {
-      exec = ''
-        echo "Initializing secrets..."
-        mkdir -p secrets/keys/{hosts,users}
-        if [ ! -f secrets/age-key.txt ]; then
-          age-keygen -o secrets/age-key.txt
-        fi
-        nixsops --config secrets/.sops.yaml init
-      '';
-      description = "Initialize secrets management";
     };
 
     # Edit secrets
@@ -206,23 +149,19 @@
       description = "Update all flake inputs";
     };
 
-    # Show dependency tree
-    deps = {
-      exec = ''
-        if [ -z "$1" ]; then
-          echo "Usage: deps <hostname>"
-          exit 1
-        fi
-        echo "Showing dependency tree for: $1"
-        nix-tree .#nixosConfigurations.$1.config.system.build.toplevel
-      '';
-      description = "Show dependency tree for a configuration";
-    };
+    # # Run unit tests
+    # test-unit = {
+    #   exec = ''
+    #     echo "Running unit tests"
+    #     nix-instantiate --eval --strict --arg pkgs 'import <nixpkgs> {}' ./lib/mkHome_test.nix
+    #     nix-instantiate --eval --strict --arg pkgs 'import <nixpkgs> {}' ./lib/mkSystem_test.nix
+    #     nix-instantiate --eval --strict --arg pkgs 'import <nixpkgs> {}' ./lib/utils_test.nix
+    #   '';
+    #   description = "Run test for the project";
+    # };
   };
 
-  # Development services
   services = {
-    # Optional: run a local documentation server
     nginx = {
       enable = false; # Enable if you want local docs
       httpConfig = ''
@@ -239,6 +178,7 @@
   languages = {
     nix = {
       enable = true;
+      lsp.package = pkgs.nixd;
     };
     jsonnet = {
       enable = true;
@@ -246,28 +186,5 @@
     shell = {
       enable = true;
     };
-  };
-
-  # Development processes
-  processes = {
-    # Optional: file watcher for automatic testing
-    watch-tests = {
-      exec = ''
-        ${pkgs.watchman}/bin/watchman-wait . -p '*.nix' --max-events 1 | while read; do
-          echo "Files changed, running tests..."
-          nix flake check --no-build
-        done
-      '';
-      process-compose = {
-        availability = {
-          restart = "on_failure";
-        };
-      };
-    };
-  };
-
-  # Development containers (optional)
-  containers = {
-    # You can add container definitions here if needed
   };
 }
