@@ -1,20 +1,4 @@
 { inputs, ... }:
-/**
-  Description
-
-  # Arguments
-
-  - `config` (attrset): User home definition
-    - name (string): Username for the configuration
-    - system (string): The target systems this profile supports
-    - stateVersion (string): Version of homeManager the user profile was initially created
-    - modules (list): Custom modules provided by the caller
-    - moduleArgs (attrset): Args that should be passed to the modules
-
-  # Type
-
-  mkHome :: attrset -> attrset
-*/
 {
   name,
   system,
