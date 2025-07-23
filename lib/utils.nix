@@ -44,7 +44,7 @@ rec {
       assert lib.isList gui;
       assert lib.isList extra || lib.isAttrs extra;
       let
-        guiEnabled = isEnabled "home.gui.enable" config false;
+        guiEnabled = isEnabled "nc.home.gui.enable" config false;
         extraPackages =
           if builtins.isAttrs extra then
             (extra.always or [ ]) ++ (lib.optionals guiEnabled (extra.gui or [ ]))
